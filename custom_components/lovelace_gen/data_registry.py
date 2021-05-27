@@ -47,22 +47,22 @@ class DataRegistry:
             return DEFAULT_AREA_ICONS[entry.name] if entry.name.lower() in icons else DEFAULT_AREA_ICON
 
         area_entries = async_get_area_registry(self.hass).areas.values()
-        result = [AreaEntry(entry.name, entry.normalized_name, entry.id, get_icon(entry)) for entry in area_entries]
+        result = { entry.id: AreaEntry(entry.name, entry.normalized_name, entry.id, get_icon(entry)) for entry in area_entries }
         return result
 
     def _get_entities(self):
-        return async_get_entity_registry(self.hass).entities.values()
+        return async_get_entity_registry(self.hass).entities
 
     def _get_entities_by_domain(self):
         entities = self._get_entities()
         entities_by_domain = {}
 
-        for entity in entities:
-            domain = entity.entity_id.split(".")[0]
+        for entity_id, entity in entities.items():
+            domain = entity_id.split(".")[0]
 
             if not domain in entities_by_domain:
-                entities_by_domain[domain] = []
+                entities_by_domain[domain] = {}
 
-            entities_by_domain[domain].append(entity)
+            entities_by_domain[domain][entity_id] = entity
 
         return entities_by_domain
