@@ -1,8 +1,9 @@
-
 #-----------------------------------------------------------#
 #       Imports
 #-----------------------------------------------------------#
 
+from .area_entry import AreaEntry
+from .const import DEFAULT_AREA_ICON, DEFAULT_AREA_ICONS
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.area_registry import async_get as async_get_area_registry
 from homeassistant.helpers.entity_registry import async_get as async_get_entity_registry
@@ -41,7 +42,13 @@ class DataRegistry:
     #-----------------------------------------------------------#
 
     def _get_areas(self):
-        return async_get_area_registry(self.hass).areas.values()
+        def get_icon(entry):
+            icons = [icon.lower() for icon in DEFAULT_AREA_ICONS.keys()]
+            return DEFAULT_AREA_ICONS[entry.name] if entry.name.lower() in icons else DEFAULT_AREA_ICON
+
+        area_entries = async_get_area_registry(self.hass).areas.values()
+        result = [AreaEntry(entry.name, entry.normalized_name, entry.id, get_icon(entry)) for entry in area_entries]
+        return result
 
     def _get_entities(self):
         return async_get_entity_registry(self.hass).entities.values()
