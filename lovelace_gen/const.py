@@ -1,0 +1,6 @@
+DOMAIN = "lovelace_gen"
+CONF_CONFIG = "config"
+PARSER_KEYWORD = "# lovelace_gen"
+PARSER_KEY_CONFIG = "config"
+PARSER_KEY_GLOBAL = "_global"
+PARSER_KEY_REGISTRY = "registry"
