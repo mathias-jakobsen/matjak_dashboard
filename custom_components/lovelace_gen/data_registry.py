@@ -8,6 +8,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.area_registry import async_get as async_get_area_registry
 from homeassistant.helpers.entity_registry import async_get as async_get_entity_registry
 from logging import Logger
+from typing import Any, Dict
+import json
 
 
 class DataRegistry:
@@ -47,11 +49,13 @@ class DataRegistry:
             return DEFAULT_AREA_ICONS[entry.name] if entry.name.lower() in icons else DEFAULT_AREA_ICON
 
         area_entries = async_get_area_registry(self.hass).areas.values()
-        result = { entry.id: AreaEntry(entry.name, entry.normalized_name, entry.id, get_icon(entry)) for entry in area_entries }
+        result = { entry.id: {**self._to_json(entry), "icon": get_icon(entry)} for entry in area_entries }
+
         return result
 
     def _get_entities(self):
-        return async_get_entity_registry(self.hass).entities
+        entity_entries = async_get_entity_registry(self.hass).entities.values()
+        return { entry.entity_id: self._to_json(entry) for entry in entity_entries }
 
     def _get_entities_by_domain(self):
         entities = self._get_entities()
@@ -66,3 +70,6 @@ class DataRegistry:
             entities_by_domain[domain][entity_id] = entity
 
         return entities_by_domain
+
+    def _to_json(self, obj: AreaEntry) -> Dict[str, Any]:
+        return { key: getattr(obj, key) for key in obj.__slots__ }
