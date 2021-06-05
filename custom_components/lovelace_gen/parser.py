@@ -2,29 +2,44 @@
 #       Imports
 #-----------------------------------------------------------#
 
-from homeassistant.core import HomeAssistant
 from .const import  PARSER_KEYWORD, PARSER_KEY_CONFIG, PARSER_KEY_GLOBAL, PARSER_KEY_REGISTRY
-from .data_registry import DataRegistry
+from .registry import Registry
 from collections import OrderedDict
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.util.yaml import loader
 from jinja2.environment import Environment
 from logging import Logger
-from typing import Dict
+from typing import Callable, Dict
 import io
 import os
-import time
 
 
 #-----------------------------------------------------------#
-#       Setup
+#       Functions
 #-----------------------------------------------------------#
 
-def get_parser(logger: Logger, hass: HomeAssistant, jinja: Environment, config_paths: Dict[str, str], data_registry: DataRegistry):
-    #-----------------------------------------------------------#
-    #       YAML Parsers
-    #-----------------------------------------------------------#
+def get_yaml_constructors(logger: Logger, load_yaml: Callable):
+    def include_yaml(ldr, node):
+        args = {}
+        if isinstance(node.value, str):
+            fn = node.value
+        else:
+            fn, args, *_ = ldr.construct_sequence(node)
+        filename = os.path.abspath(os.path.join(os.path.dirname(ldr.name), fn))
+        try:
+            return loader._add_reference(
+                load_yaml(filename, ldr.secrets, args=args), ldr, node
+            )
+        except FileNotFoundError as exc:
+            logger.error("Unable to include file %s: %s", filename, exc)
+            raise HomeAssistantError(exc)
 
+    return {
+        "!include": include_yaml
+    }
+
+def get_yaml_loader(logger: Logger, hass: HomeAssistant, jinja: Environment, config_paths: Dict[str, str], registry: Registry):
     def load_config():
         result = {}
 
@@ -56,7 +71,11 @@ def get_parser(logger: Logger, hass: HomeAssistant, jinja: Environment, config_p
                             **args,
                             PARSER_KEY_GLOBAL: {
                                 PARSER_KEY_CONFIG: load_config(),
-                                PARSER_KEY_REGISTRY: data_registry.get()
+                                PARSER_KEY_REGISTRY: {
+                                    "areas": registry.areas,
+                                    "devices": registry.devices,
+                                    "entities": registry.entities
+                                }
                             }
                         }))
                 stream.name = filename
@@ -71,39 +90,4 @@ def get_parser(logger: Logger, hass: HomeAssistant, jinja: Environment, config_p
             logger.error("Unable to read file %s: %s", filename, exc)
             raise HomeAssistantError(exc)
 
-
-    #-----------------------------------------------------------#
-    #       YAML Constructors
-    #-----------------------------------------------------------#
-
-    def include_yaml(ldr, node):
-        args = {}
-        if isinstance(node.value, str):
-            fn = node.value
-        else:
-            fn, args, *_ = ldr.construct_sequence(node)
-        filename = os.path.abspath(os.path.join(os.path.dirname(ldr.name), fn))
-        try:
-            return loader._add_reference(
-                load_yaml(filename, ldr.secrets, args=args), ldr, node
-            )
-        except FileNotFoundError as exc:
-            logger.error("Unable to include file %s: %s", filename, exc)
-            raise HomeAssistantError(exc)
-
-    def uncache_file(ldr, node):
-        path = node.value
-        timestamp = str(time.time())
-        if "?" in path:
-            return f"{path}&{timestamp}"
-        return f"{path}?{timestamp}"
-
-
-    #-----------------------------------------------------------#
-    #       Return
-    #-----------------------------------------------------------#
-
-    return load_yaml, {
-        "!include": include_yaml,
-        "!file": uncache_file
-    }
+    return load_yaml
