@@ -12,6 +12,9 @@ from logging import Logger, getLogger
 from typing import Any, Dict
 import jinja2
 
+from homeassistant.components.lovelace.dashboard import LovelaceYAML
+from homeassistant.components.lovelace import _register_panel
+
 
 #-----------------------------------------------------------#
 #       Constants
@@ -47,6 +50,19 @@ async def async_setup(hass: HomeAssistant, config: Dict[str, Any]):
 
     setup_jinja_filters(jinja)
     setup_yaml_loader(LOGGER, hass, jinja, config_paths, registry)
+
+    url = "test-test"
+    config = {
+        "mode": "yaml",
+        "icon": "mdi:view-dashboard",
+        "title": "Test",
+        "filename": "custom_components/lovelace_gen/lovelace/ui-lovelace.yaml",
+        "show_in_sidebar": True,
+        "require_admin": False,
+    }
+
+    hass.data["lovelace"]["dashboards"][url] = LovelaceYAML(hass, url, config)
+    _register_panel(hass, url, "yaml", config, False)
 
     return True
 
