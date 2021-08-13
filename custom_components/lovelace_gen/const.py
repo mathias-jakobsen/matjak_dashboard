@@ -9,8 +9,15 @@ DOMAIN = "lovelace_gen"
 #       Configuration
 #-----------------------------------------------------------#
 
+CONF_AREA_ID = "area_id"
 CONF_CONFIG = "config"
+CONF_DEVICE_CLASS = "device_class"
+CONF_DEVICE_ID = "device_id"
+CONF_DOMAIN = "domain"
+CONF_EXCLUDE_AREAS = "exclude_areas"
+CONF_EXCLUDE_ENTITIES = "exclude_entities"
 CONF_ICON = "icon"
+CONF_ID = "id"
 CONF_NAME = "name"
 
 

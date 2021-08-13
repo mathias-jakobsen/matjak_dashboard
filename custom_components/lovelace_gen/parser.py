@@ -3,7 +3,7 @@
 #-----------------------------------------------------------#
 
 from .const import  PARSER_KEYWORD, PARSER_KEY_CONFIG, PARSER_KEY_GLOBAL, PARSER_KEY_REGISTRY
-from .registry import Registry
+from .registry import get_registry
 from collections import OrderedDict
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
@@ -39,7 +39,7 @@ def get_yaml_constructors(logger: Logger, load_yaml: Callable):
         "!include": include_yaml
     }
 
-def get_yaml_loader(logger: Logger, hass: HomeAssistant, jinja: Environment, config_paths: Dict[str, str], registry: Registry):
+def get_yaml_loader(logger: Logger, hass: HomeAssistant, jinja: Environment, config_paths: Dict[str, str]):
     def load_config():
         result = {}
 
@@ -67,15 +67,12 @@ def get_yaml_loader(logger: Logger, hass: HomeAssistant, jinja: Environment, con
                     is_lovelace_gen = True
 
             if is_lovelace_gen:
+                config = load_config()
                 stream = io.StringIO(jinja.get_template(filename).render({
                             **args,
                             PARSER_KEY_GLOBAL: {
-                                PARSER_KEY_CONFIG: load_config(),
-                                PARSER_KEY_REGISTRY: {
-                                    "areas": registry.areas,
-                                    "devices": registry.devices,
-                                    "entities": registry.entities
-                                }
+                                PARSER_KEY_CONFIG: config,
+                                PARSER_KEY_REGISTRY: get_registry(hass, config)
                             }
                         }))
                 stream.name = filename
