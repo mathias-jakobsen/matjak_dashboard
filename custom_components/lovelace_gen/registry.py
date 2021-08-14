@@ -18,7 +18,7 @@ from .const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import area_registry, device_registry, entity_registry
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 
 # -----------------------------------------------------------#
@@ -119,7 +119,10 @@ class Entities:
         for entity in self.registry.values():
             yield entity
 
-    def get_by_area(self, area_id_or_name: str, domain: str = None):
+    def get_by_area(self, area_id_or_name: Union[str, Dict[str, Any]], domain: str = None):
+        if not isinstance(area_id_or_name, str):
+            area_id_or_name = area_id_or_name.get(CONF_ID, area_id_or_name.get(CONF_NAME, None))
+
         area = self.areas.get_by_id(area_id_or_name) or self.areas.get_by_name(area_id_or_name)
 
         if area is None:
