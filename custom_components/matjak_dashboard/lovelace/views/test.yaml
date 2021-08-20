@@ -5,3 +5,5 @@ path: test
 cards:
   - type: custom:button-card
     name: hello
+  - type: custom:button-card
+    name: hello
