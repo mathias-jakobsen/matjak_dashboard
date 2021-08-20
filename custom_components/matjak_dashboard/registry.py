@@ -50,7 +50,7 @@ def slots_to_dict(obj: Dict[str, Any]):
 class Areas:
     def __init__(self, hass: HomeAssistant, exclude_areas: list):
         self.hass = hass
-        self.registry = { area_id: self._to_dict(area) for area_id, area in sorted(area_registry.async_get(self.hass).areas.items()) if area.name not in exclude_areas}
+        self.registry = { area_id: self._to_dict(area) for area_id, area in sorted(area_registry.async_get(self.hass).areas.items()) if area_id not in exclude_areas and area.name not in exclude_areas}
 
     def __iter__(self):
         for area in self.registry.values():
@@ -84,7 +84,7 @@ class Devices:
         self.areas = areas
         self.exclude_devices = exclude_devices
         self.hass = hass
-        self.registry = { device_id: slots_to_dict(device) for device_id, device in sorted(device_registry.async_get(self.hass).devices.items()) if device_id not in exclude_devices}
+        self.registry = { device_id: slots_to_dict(device) for device_id, device in sorted(device_registry.async_get(self.hass).devices.items()) if device_id not in exclude_devices and device.disabled_by == None}
 
     def __iter__(self):
         for device in self.registry.values():
@@ -113,7 +113,7 @@ class Entities:
         self.devices = devices
         self.exclude_entities = exclude_entities
         self.hass = hass
-        self.registry = { entity_id: self._to_dict(entity) for entity_id, entity in sorted(entity_registry.async_get(self.hass).entities.items()) if entity_id not in exclude_entities}
+        self.registry = { entity_id: self._to_dict(entity) for entity_id, entity in sorted(entity_registry.async_get(self.hass).entities.items()) if entity_id not in exclude_entities and entity.disabled_by == None}
 
     def __iter__(self):
         for entity in self.registry.values():

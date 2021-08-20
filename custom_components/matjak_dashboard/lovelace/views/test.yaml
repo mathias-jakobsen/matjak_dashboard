@@ -1,0 +1,7 @@
+# lovelace_gen
+
+title: Test
+path: test
+cards:
+  - type: custom:button-card
+    name: hello

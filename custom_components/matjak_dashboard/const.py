@@ -2,7 +2,7 @@
 #       Custom Component
 #-----------------------------------------------------------#
 
-DOMAIN = "lovelace_gen"
+DOMAIN = "matjak_dashboard"
 
 
 #-----------------------------------------------------------#
@@ -10,7 +10,7 @@ DOMAIN = "lovelace_gen"
 #-----------------------------------------------------------#
 
 CONF_AREA_ID = "area_id"
-CONF_CONFIG = "config"
+CONF_CONFIG_PATH = "config_path"
 CONF_DEVICE_CLASS = "device_class"
 CONF_DEVICE_ID = "device_id"
 CONF_DOMAIN = "domain"
@@ -19,13 +19,15 @@ CONF_EXCLUDE_ENTITIES = "exclude_entities"
 CONF_ICON = "icon"
 CONF_ID = "id"
 CONF_NAME = "name"
+CONF_SIDEPANEL_ICON = "sidepanel_icon"
+CONF_SIDEPANEL_TITLE = "sidepanel_title"
 
 
 #-----------------------------------------------------------#
 #       Parsing
 #-----------------------------------------------------------#
 
-PARSER_KEYWORD = "# lovelace_gen"
+PARSER_KEYWORD = "# matjak_dashboard"
 PARSER_KEY_CONFIG = "config"
 PARSER_KEY_GLOBAL = "_global"
 PARSER_KEY_REGISTRY = "registry"
@@ -52,3 +54,16 @@ DEFAULT_AREA_ICONS = {
     "Wardrobe": "mdi:wardrobe",
     "Walk In": "mdi:wardrobe"
 }
+DEFAULT_CONFIG_PATH = "matjak_dashboard/"
+DEFAULT_SIDEPANEL_ICON = "mdi:view-dashboard"
+DEFAULT_SIDEPANEL_TITLE = "Matjak"
+
+
+#-----------------------------------------------------------#
+#       Dashboard & Themes
+#-----------------------------------------------------------#
+
+DASHBOARD_FILENAME = "custom_components/matjak_dashboard/lovelace/ui-lovelace.yaml"
+DASHBOARD_URL = "matjak-dashboard"
+PLUGIN_URL = "/matjak_dashboard/plugins"
+THEMES_FILENAME = "custom_components/matjak_dashboard/themes/matjak_dashboard.yaml"

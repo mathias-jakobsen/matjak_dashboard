@@ -11,7 +11,7 @@
 
 /custom_components/**
 !/custom_components/**/
-!/custom_components/lovelace_gen
-!/custom_components/lovelace_gen/*
-!/custom_components/lovelace_gen/**/*
-/custom_components/lovelace_gen/**/__pycache__
+!/custom_components/matjak_dashboard
+!/custom_components/matjak_dashboard/*
+!/custom_components/matjak_dashboard/**/*
+/custom_components/matjak_dashboard/**/__pycache__

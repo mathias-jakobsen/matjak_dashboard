@@ -2,15 +2,22 @@
 #       Imports
 #-----------------------------------------------------------#
 
-from .const import  PARSER_KEYWORD, PARSER_KEY_CONFIG, PARSER_KEY_GLOBAL, PARSER_KEY_REGISTRY
+from .const import (
+    CONF_CONFIG_PATH,
+    PARSER_KEYWORD,
+    PARSER_KEY_CONFIG,
+    PARSER_KEY_GLOBAL,
+    PARSER_KEY_REGISTRY
+)
 from .registry import get_registry
 from collections import OrderedDict
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.util.yaml import loader
 from jinja2.environment import Environment
 from logging import Logger
-from typing import Callable, Dict
+from typing import Callable
 import io
 import os
 
@@ -39,24 +46,22 @@ def get_yaml_constructors(logger: Logger, load_yaml: Callable):
         "!include": include_yaml
     }
 
-def get_yaml_loader(logger: Logger, hass: HomeAssistant, jinja: Environment, config_paths: Dict[str, str]):
+def get_yaml_loader(logger: Logger, hass: HomeAssistant, jinja: Environment, config_entry: ConfigEntry):
     def load_config():
         result = {}
+        config_path = config_entry.options.get(CONF_CONFIG_PATH, config_entry.data.get(CONF_CONFIG_PATH))
+        path = hass.config.path(config_path)
 
-        for key, value in config_paths.items():
-            path = hass.config.path(value)
-            result[key] = {}
+        if os.path.exists(path):
+            dashboard_config = {}
 
-            if os.path.exists(path):
-                dashboard_config = {}
+            for filename in loader._find_files(path, "*.yaml"):
+                config = load_yaml(filename)
+                if isinstance(config, dict):
+                    dashboard_config.update(config)
 
-                for filename in loader._find_files(path, "*.yaml"):
-                    config = load_yaml(filename)
-                    if isinstance(config, dict):
-                        dashboard_config.update(config)
-
-                result[key].update(dashboard_config)
-
+            result.update(dashboard_config)
+        logger.debug(result)
         return result
 
     def load_yaml(filename, secrets = None, args = {}):

@@ -1,0 +1,4 @@
+exclude_entities:
+  - light.kitchen_ceiling_lights
+exclude_areas:
+  - living_room
