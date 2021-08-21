@@ -34,7 +34,7 @@ async def async_create_resource(hass: HomeAssistant, logger: Logger, url: str) -
         add_extra_js_url(hass, url)
 
 async def async_load_plugins(hass: HomeAssistant, logger: Logger) -> None:
-    plugin_path = hass.config.path("custom_components/matjak_dashboard/lovelace/plugins")
+    plugin_path = hass.config.path("custom_components/matjak_dashboard/plugins")
     hass.http.register_static_path(PLUGIN_URL, plugin_path, True)
 
     for filename in loader._find_files(plugin_path, "*.js"):
