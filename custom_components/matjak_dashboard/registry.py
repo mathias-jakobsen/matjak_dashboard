@@ -143,14 +143,9 @@ class Entities:
     def get_by_device_class(self, *device_classes: str):
         entities = []
 
-        for entity_id, entity in self.registry.items():
-            state = self.hass.states.get(entity_id)
-
-            if state:
-                device_class = state.attributes.get(CONF_DEVICE_CLASS, None)
-
-                if device_class and device_class in device_classes:
-                    entities.append(entity)
+        for entity in self.registry.values():
+            if entity[CONF_DEVICE_CLASS] in device_classes:
+                entities.append(entity)
 
         return entities
 
@@ -167,11 +162,13 @@ class Entities:
 
     def _to_dict(self, entity: entity_registry.RegistryEntry):
         state = self.hass.states.get(entity.entity_id) or {}
-        entity_dict = slots_to_dict(entity)
 
-        if state:
-            entity_dict[CONF_DEVICE_CLASS] = state.attributes.get(CONF_DEVICE_CLASS, entity.device_class)
-            entity_dict[CONF_ICON] = state.attributes.get(CONF_ICON, entity.icon)
-            entity_dict[CONF_NAME] = state.attributes.get(CONF_NAME, entity.name)
-
-        return entity_dict
+        return {
+            "area_id": entity.area_id or (entity.device_id and self.devices.get_by_id(entity.device_id)[CONF_AREA_ID]) or None,
+            "device_id": entity.device_id,
+            "entity_id": entity.entity_id,
+            "domain": entity.domain,
+            "name": state.attributes.get("friendly_name", entity.name or entity.original_name),
+            "icon": state.attributes.get("icon", entity.icon or entity.original_icon),
+            "device_class": state.attributes.get("device_class", entity.device_class)
+        }

@@ -1,9 +1,10 @@
-# lovelace_gen
+# matjak_dashboard
 
 title: Test
 path: test
 cards:
+  {% for area in _global.registry.areas %}
   - type: custom:button-card
-    name: hello
-  - type: custom:button-card
-    name: hello
+    name: {{ area.name }}
+    icon: {{ _global.registry.areas.get_area_icon(area) }}
+  {% endfor %}
