@@ -1,0 +1,46 @@
+base:
+  show_icon: true
+  show_label: false
+  show_last_changed: false
+  show_name: true
+  show_state: true
+
+  state:
+    - id: state_on
+      operator: template
+      value: >
+        [[[
+          return ["on", "playing"].includes(entity?.state || "on");
+        ]]]
+      styles:
+        card:
+          - background: var(--ha-card-background)
+
+  styles:
+    card:
+      - background: var(--ha-card-background-secondary)
+      - padding: 9px 11px 11px 11px
+      - position: relative
+    grid:
+      - grid-template-areas: "'i .' 'n n' 's s'"
+      - grid-template-columns: auto 1fr
+      - grid-template-rows: 1fr 0.7fr auto
+    icon:
+      - color: var(--primary-text-color)
+      - width: 35px
+    label:
+      - color: var(--secondary-text-color)
+      - font-size: 13px
+      - grid-area: s
+      - place-self: start
+      - text-transform: capitalize
+    name:
+      - font-size: 16px
+      - padding-bottom: 2px
+      - place-self: end start
+      - text-transform: capitalize
+    state:
+      - color: var(--secondary-text-color)
+      - font-size: 13px
+      - place-self: center start
+  

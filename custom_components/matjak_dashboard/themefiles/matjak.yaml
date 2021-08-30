@@ -1,0 +1,56 @@
+matjak:
+  ha-card-border-radius: 16px
+  ha-card-box-shadow: inset 0px 0px 0px 1px var(--border-color)
+  ha-card-header-font-size: 1.5em
+  button-color-hue-battery-charging: 130
+  button-color-hue-battery-critical: 4
+  button-color-hue-light: 30
+
+  divider-color: transparent
+  sidebar-background-color: var(--primary-background-color)
+
+  data-table-background-color: var(--primary-background-color)
+
+  modes:
+    light:
+      app-header-tab-color-active: hsla(0, 0%, 0%, 0.2)
+      border-color: hsla(0, 0%, 76%, 1)
+
+      button-color-background__alpha: 0.3
+      button-color-background__lightness: 50%
+      button-color-background__saturation: 100%
+
+      button-color-text__alpha: 1
+      button-color-text__lightness: 30%
+      button-color-text__saturation: 100%
+
+      ha-card-background: white
+      ha-card-background-secondary: whitesmoke
+      ha-card-header-color: hsla(215, 0%, 30%, 1)
+
+      primary-background-color: hsla(0, 0%, 95%, 1)
+
+    dark:
+      app-header-tab-color-active: hsla(0, 0%, 50%, 0.2)
+      border-color: hsla(0, 0%, 15%, 1)
+
+      button-color-background__alpha: 0.3
+      button-color-background__lightness: 30%
+      button-color-background__saturation: 100%
+
+      button-color-text__alpha: 1
+      button-color-text__lightness: 50%
+      button-color-text__saturation: 100%
+
+      ha-card-background: hsla(0, 0%, 10%, 1)
+      ha-card-background-secondary: hsla(0, 0%, 6%, 1)
+      #ha-card-header-color: hsla(215, 0%, 30%, 1)
+
+      primary-background-color: hsla(0, 0%, 4%, 1)
+
+
+  card-mod-theme: matjak
+  card-mod-root-yaml: !include ../custom_components/matjak_dashboard/themefiles/card_mod/root.yaml
+  card-mod-view-yaml: !include ../custom_components/matjak_dashboard/themefiles/card_mod/view.yaml
+  card-mod-more-info-yaml: !include ../custom_components/matjak_dashboard/themefiles/card_mod/more-info.yaml
+  card-mod-card-yaml: !include ../custom_components/matjak_dashboard/themefiles/card_mod/card.yaml

@@ -1,0 +1,47 @@
+# matjak_dashboard
+
+- title: Home
+  path: home
+  icon: mdi:home
+  panel: true
+  cards:
+    - type: vertical-stack
+      cards:
+        - type: markdown
+          card_mod:
+            class: view-title
+          content: Your home
+
+        - type: entities
+          card_mod:
+            class: layout-grid-square
+            style: |
+              #states {
+                grid-template-columns: repeat(auto-fit, minmax(65px, 1fr)) !important;
+              }
+
+              #states > div:first-child {
+                grid-column: 1 / span 2 !important;
+              }
+
+              #states > div {
+                grid-column: span 2;
+              }
+          entities:
+            {% for area in _global.registry.areas | sort %}
+            {% set entities = _global.registry.entities.get_by_area(area) %}
+            {% if entities | count > 0 %}
+            - type: custom:button-card
+              template: area
+              icon: {{ _global.registry.areas.get_area_icon(area) }}
+              name: {{ area.name }}
+              state_display: >
+                [[[
+                  const count = {{ entities | count }};
+                  return `${count} ${count == 1 ? "device" : "devices"}`;
+                ]]]
+              tap_action:
+                action: navigate
+                navigation_path: /matjak-dashboard/{{ area.id }}
+            {% endif %}
+            {% endfor %}

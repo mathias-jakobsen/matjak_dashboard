@@ -1,0 +1,212 @@
+popup: 
+  variables:
+    __current_view: 0
+    background_color: var(--primary-background-color)
+    title: Popup
+    header_buttons: []
+    views: []         # { title: str, icon: str, card: Object }
+
+  show_icon: false
+  show_label: false
+  show_name: false
+  show_state: false
+
+  tap_action:
+    action: none
+
+  card_mod:
+    style: |
+      #content > * {
+        width: 100%;
+      }
+
+  state:
+    - id: state_on
+      operator: template
+      value: >
+        [[[
+          return ["on", "playing"].includes(entity.state);
+        ]]]
+      styles:
+        card:
+          - --popup-background-color: var(--button-card-light-color)
+
+  styles:
+    card:
+      - --popup-background-color: "[[[ return variables.views[variables.__current_view]?.background_color || variables.background_color; ]]]"
+      - --popup-background-transition: background-color 400ms ease 100ms
+      - --popup-text-color: >
+          [[[
+            function getColorValues(color) {
+              if (!color) {
+                return;
+              }
+                
+              if (color.toLowerCase() === "transparent") {
+                return [0, 0, 0, 0];
+              }
+                
+              if (color[0] === "#") {
+                if (color.length < 7) {
+                  color = "#" + color[1] + color[1] + color[2] + color[2] + color[3] + color[3] + (color.length > 4 ? color[4] + color[4] : "");
+                }
+
+                return [
+                  parseInt(color.substr(1, 2), 16),
+                  parseInt(color.substr(3, 2), 16),
+                  parseInt(color.substr(5, 2), 16),
+                  color.length > 7 ? parseInt(color.substr(7, 2), 16)/255 : 1
+                ];
+              }
+
+              if (color.indexOf("rgb") === -1) {
+                var temp_elem = document.body.appendChild(document.createElement("fictum"));
+                var flag = "rgb(1, 2, 3)";
+                temp_elem.style.color = flag;
+
+                if (temp_elem.style.color !== flag) {
+                  return;
+                }
+
+                temp_elem.style.color = color;
+
+                if (temp_elem.style.color === flag || temp_elem.style.color === "") {
+                  return;
+                }
+                  
+                color = getComputedStyle(temp_elem).color;
+                document.body.removeChild(temp_elem);
+              }
+
+              if (color.indexOf("rgb") === 0) {
+                if (color.indexOf("rgba") === -1) {
+                  color += ",1";
+                }
+
+                return color.match(/[\.\d]+/g).map(function(a) { return +a });
+              }
+            }
+            
+            let color;
+            const domain = entity.entity_id.split(".")[0];
+            
+            if (domain == "light") {
+              if (entity.state == "on") {
+                color = this._getColorForLightEntity(this._stateObj, true);
+              }
+              else {
+                color = variables.views[variables.__current_view]?.background_color || variables.background_color;
+              }
+            }
+            else {
+              color = variables.views[variables.__current_view]?.background_color || variables.background_color;
+            }
+            
+            const rgba = getColorValues(color);
+            const sum = (rgba[0] * 0.2126) + (rgba[1] * 0.7152) + (rgba[2] * 0.0722);
+            const perceived_lightness = sum / 255;
+
+            const threshold = 0.3;
+            const border_threshold = 0.8;
+
+            return `hsl(0, 0%, calc((${perceived_lightness} - ${threshold}) * -10000000%)`;
+          ]]]
+      - --popup-text-transition: none
+      - background-color: var(--popup-background-color)
+      - border-radius: var(--mdc-shape-medium)
+      - box-shadow: var(--mdc-dialog-box-shadow)
+      - padding: 10px 10px 20px 10px
+      - transition: var(--popup-background-transition, none)
+
+    custom_fields:
+      back_button:
+        - pointer-events: auto
+      title:
+        - color: var(--popup-text-color)
+        - text-align: left
+        - transition: var(--popup-text-transition)
+      content:
+        - align-items: "[[[ return variables.views[variables.__current_view]?.align_items || 'stretch'; ]]]"
+        - display: flex
+        - height: 100%
+        - justify-content: center
+
+    grid:
+      - grid-gap: 20px 10px
+      - grid-template-areas: "'back_button title header_buttons' 'content content content' 'footer_buttons footer_buttons footer_buttons'"
+      - grid-template-columns: auto 1fr auto
+      - grid-template-rows: auto 1fr auto   
+
+  custom_fields:
+    title: "[[[ return variables.title; ]]]"
+
+    back_button:
+      card:
+        type: custom:button-card
+        template: popup_button_close
+
+    header_buttons:
+      card:
+        type: entities
+        card_mod:
+          class: layout-flex
+          style: |
+            #states > div {
+              pointer-events: auto;
+            }
+        entities: "[[[ return variables.header_buttons; ]]]"
+
+    content:
+      card: >
+        [[[
+          return variables.views[variables.__current_view].card;
+        ]]]
+      
+    footer_buttons:
+      card:
+        type: entities
+        card_mod:
+          class: layout-flex-center
+          style: |
+            #states > div {
+              pointer-events: auto;
+            }
+        entities: >
+          [[[ 
+            const buttons = [];
+
+            for (const view of variables.views) {
+              const button = {
+                type: "custom:button-card",
+                template: "popup_button",
+                icon: view.icon || `mdi:numeric-${buttons.length}-circle`,
+                styles: {
+                  card: [{ opacity: variables.__current_view == buttons.length ? 1 : 0.5 }]
+                },
+                tap_action: {
+                  action: variables.__current_view == buttons.length ? "none" : "fire-dom-event",
+                  browser_mod: {
+                    command: "popup",
+                    title: "",
+                    hide_header: true,
+                    card: {
+                      type: "custom:button-card",
+                      template: "popup",
+                      entity: entity.entity_id,
+                      variables: {
+                        __current_view: buttons.length,
+                        background_color: view.background_color || variables.background_color,
+                        title: variables.title,
+                        header_buttons: variables.header_buttons,
+                        views: variables.views
+                      }
+                    }
+                  }
+                }
+              };
+
+              buttons.push(button);
+            }
+
+            return buttons; 
+          ]]]

@@ -1,0 +1,28 @@
+|
+  hui-panel-view$:
+    hui-grid-card$:
+      .: |
+        #root {
+          grid-template-columns: 0.3fr 1fr !important;
+          grid-template-rows: 1fr;
+          padding: 20px 10px;
+        }
+
+        #root::before {
+          display: none;
+        }
+
+        @media (max-width: 750px) {
+          #root {
+            grid-template-columns: 1fr !important;
+            grid-template-rows: auto 1fr;
+          }
+        }
+
+      hui-grid-card$: |
+        #root {
+          grid-gap: 20px !important;
+          grid-template-columns: 1fr !important;
+          grid-template-rows: auto 1fr auto;
+        }
+

@@ -1,0 +1,30 @@
+alert:
+  template: base
+
+  extra_styles: >
+    [[[
+      return `
+        @keyframes blink {
+          50% {
+            opacity: 0;
+          }
+        }
+      `;
+    ]]]
+
+  custom_fields:
+    info: >
+      [[[
+        return `<ha-icon icon="mdi:alert" style="width: 20px"></ha-icon>`;
+      ]]]
+
+  styles:
+    custom_fields:
+      info:
+        - animation: blink 1s step-start 0s infinite
+        - color: red
+        - display: "[[[ return entity.state == 'on' ? 'flex' : 'none'; ]]]"
+        - flex-direction: column
+        - position: absolute
+        - right: 11px
+        - top: 11px

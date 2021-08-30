@@ -29,6 +29,7 @@ CONF_SIDEPANEL_TITLE = "sidepanel_title"
 #-----------------------------------------------------------#
 
 PARSER_KEYWORD = "# matjak_dashboard"
+PARSER_KEY_BUTTON_CARD_TEMPLATES = "button_card_template_list"
 PARSER_KEY_CONFIG = "config"
 PARSER_KEY_GLOBAL = "_global"
 PARSER_KEY_REGISTRY = "registry"

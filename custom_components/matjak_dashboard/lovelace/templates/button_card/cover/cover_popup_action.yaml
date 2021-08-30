@@ -1,0 +1,24 @@
+cover_popup_action:
+  show_icon: true
+  show_name: false
+  show_state: false
+
+  card_mod:
+    style: |
+      :host {
+        place-self: center;
+      }
+
+  styles:
+    card:
+      - background: none
+      - border-radius: 50%
+      - box-shadow: none
+      - height: 80px
+      - padding: 0
+      - transition: none
+      - width: 80px
+    icon:
+      - color: var(--popup-text-color)
+      - transition: var(--popup-text-transition)
+      - width: 60px

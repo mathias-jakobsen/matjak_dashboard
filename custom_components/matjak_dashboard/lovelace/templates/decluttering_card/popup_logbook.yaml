@@ -1,0 +1,57 @@
+popup_logbook:
+  default:
+    - hours_to_show_history: 36
+    - hours_to_show_logbook: 48
+  card:
+    type: vertical-stack
+    cards:
+      - type: history-graph
+        card_mod:
+          class: popup
+        entities: 
+          - "[[entity]]"
+        hours_to_show: "[[hours_to_show_history]]"
+      - type: logbook
+        card_mod:
+          class: popup
+          style:
+            .: |
+              :host {
+                height: 340px;
+              }
+
+              .content {
+                padding: 16px 16px 0 16px !important;
+              }
+
+              ha-logbook {
+                --state-icon-color: var(--popup-text-color);
+              }
+
+              @media (max-width: 450px) {
+                :host {
+                  height: 100%;
+                }
+              }
+            ha-logbook$: |
+              .entry {
+                #pointer-events: none;
+              }
+
+              .date,
+              .message,
+              .name {
+                color: var(--popup-text-color, var(--primary-text-color)) !important;
+              }
+
+              .message {
+                text-align: start;
+              }
+
+              .message a {
+                font-weight: bold;
+                text-decoration: none;
+              }
+        entities:
+          - "[[entity]]"
+        hours_to_show: "[[hours_to_show_logbook]]"

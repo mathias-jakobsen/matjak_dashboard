@@ -1,0 +1,42 @@
+|
+  .: |
+    ha-dialog {
+      --mdc-dialog-box-shadow: var(--ha-card-box-shadow);
+      --mdc-shape-medium: var(--ha-card-border-radius);
+      --mdc-theme-surface: transparent;
+    }
+
+    ha-icon {
+      display: flex;
+    }
+
+    .content {
+      --grid-card-gap: 20px 16px;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 450px) {
+      ha-dialog {
+        --mdc-dialog-box-shadow: none;
+        --mdc-shape-medium: none;
+      }
+
+      .content {
+        height: 100vh;
+      }
+
+      .content > *:first-child {
+        height: 100%;
+      }
+    }
+
+  ha-dialog:
+    .: |
+      div {
+        display: none;
+      }
+
+  $: |
+    .mdc-dialog__surface {
+      overflow: visible;
+    }

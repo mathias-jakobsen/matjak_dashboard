@@ -1,0 +1,33 @@
+light:
+  template: base
+
+  state_display: "[[[ return entity.state == 'on' ? `${Math.round(entity.attributes.brightness / 2.55)} %` : entity.state; ]]]"
+
+  custom_fields:
+    color: ""
+
+  styles:
+    custom_fields:
+      color:
+        - background-color: var(--button-card-light-color)
+        - border-radius: 50%
+        - border: 1px solid var(--border-color)
+        - display: "[[[ return entity.state == 'on' ? 'flex' : 'none'; ]]]"
+        - padding: 10px
+        - position: absolute
+        - right: 11px
+        - top: 11px
+    state:
+      - text-transform: capitalize
+
+  hold_action:
+    repeat: 100
+    action: fire-dom-event
+    browser_mod:
+      command: popup
+      title: ""
+      hide_header: true
+      card:
+        type: custom:button-card
+        template: light_popup
+        entity: "[[[ return entity.entity_id; ]]]"

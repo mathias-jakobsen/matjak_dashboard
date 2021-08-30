@@ -1,0 +1,58 @@
+|
+  .: |
+    app-header::before {
+      box-shadow: inset 0px 2px 1px 0 rgba(0, 0, 0, 0.4);
+      opacity: 1;
+    }
+
+    app-toolbar ha-tabs {
+      margin-left: 0 !important;
+    }
+
+    #view {
+      box-sizing: border-box;
+      padding: 20px 10px 20px 10px;
+    }
+
+    @media (max-width: 450px) {
+      app-header {
+        bottom: var(--layout-fixed-top_-_top);
+        top: unset;
+      }
+
+      app-header::before {
+        box-shadow: inset 0px -2px 1px 0 rgba(0, 0, 0, 0.4);
+        bottom: unset;
+        top: -5px;
+        transition: none;
+      }
+
+      #view {
+        transform: translate(0, calc(var(--header-height) * -1));
+      }
+    }
+
+  ha-tabs:
+    .: |
+      paper-tab {
+        flex: 1;
+      }
+
+      paper-tab[aria-selected="true"] {
+        background: var(--app-header-tab-color-active);
+      }
+
+    $: |
+      #tabsContainer {
+        display: flex;
+      }
+
+      #selectionBar {
+        display: none;
+      }
+
+      @media (max-width: 870px) {
+        #tabsContainer {
+          justify-content: space-around;
+        }
+      }

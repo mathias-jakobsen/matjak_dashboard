@@ -1,0 +1,2 @@
+sensor_battery:
+  template: base

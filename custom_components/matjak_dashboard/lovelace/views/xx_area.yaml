@@ -1,0 +1,34 @@
+# matjak_dashboard
+
+{% for area in _global.registry.areas %}
+- title: {{ area.name }}
+  path: {{ area.id }}
+  icon: {{ _global.registry.areas.get_area_icon(area) }}
+  panel: true
+  visible: false
+  cards:
+    - type: vertical-stack
+      cards:
+        - type: markdown
+          card_mod:
+            class: view-title
+          content: {{ area.name }}
+
+        {% for domain, entities in _global.registry.entities.get_by_area(area) | groupby("domain") %}
+        - type: entities
+          card_mod:
+            class: layout-grid-square
+          title: {{ domain.split("_") | join(" ") | title }}
+          entities:
+            {% for entity in entities | sort(attribute="domain") | sort(attribute="name") %}
+            - type: custom:button-card
+              {% if (entity.domain == "sensor" or entity.domain == "binary_sensor") and entity.device_class %}
+              template: {{ entity.domain }}_{{ entity.device_class }}
+              {% else %}
+              template: {{ entity.domain }}
+              {% endif %}
+              entity: {{ entity.entity_id }}
+              name: {{ entity.name if not entity.name.startswith(area.name) else entity.name.replace(area.name, "", 1) }}
+            {% endfor %}
+        {% endfor %}
+{% endfor %}

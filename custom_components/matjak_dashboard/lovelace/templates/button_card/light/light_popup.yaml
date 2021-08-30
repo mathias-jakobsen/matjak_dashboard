@@ -1,0 +1,129 @@
+light_popup:
+  template: popup
+  
+  variables:
+    title: "[[[ return entity.attributes.friendly_name; ]]]"
+    
+    header_buttons:
+      - type: custom:button-card
+        template: popup_button
+        icon: "[[[ return entity.attributes.icon; ]]]"
+        tap_action:
+          action: none
+
+    views:
+      - icon: mdi:brightness-5
+        align_items: center
+        card:
+          type: custom:mod-card
+          style:
+            light-popup-card$: |
+              .popup-inner {
+                gap: 10px;
+              }
+
+              .icon {
+                display: none !important;
+              }
+
+              #brightnessValue {
+                color: var(--popup-text-color);
+                margin-bottom: 10px;
+                transition: var(--popup-text-transition);
+              }
+
+              input {
+                box-shadow: 0 0 1px 1px rgba(0,0,0,0.3);
+                pointer-events: auto;
+                transition: none !important;
+              }
+          card:
+            type: custom:light-popup-card
+            entity: "[[[ return entity.entity_id; ]]]"
+            fullscreen: false
+            brightnessHeight: 400px
+            brightnessWidth: 90px
+            sliderThumbColor: "#ccc"
+            sliderTrackColor: "#ccc"
+            sliderColor: hsla(44, 0%, 40%, 1)
+
+      - icon: mdi:palette
+        align_items: center
+        card:
+          type: custom:light-entity-card
+          entity: "[[[ return entity.entity_id; ]]]"
+          hide_header: true
+          brightness: false
+          color_temp: true
+          child_card: true
+          smooth_color_wheel: true
+          persist_features: true
+          effects_list: false
+          full_width_sliders: false
+          card_mod:
+            style:
+              ".": |
+                ha-card {
+                  background: none;
+                  display: flex;
+                  flex-direction: column-reverse;
+                  gap: 10px;
+                  pointer-events: auto;
+                  transition: none;
+                }
+
+                .light-entity-card-sliders > div {
+                  margin-top: 0;
+                }
+
+                .light-entity-card-sliders ha-icon {
+                  display: none;
+                }
+
+                .light-entity-card-color_temp {
+                  --calculated-paper-slider-height: 50px;
+                  width: 100%;
+                }
+              
+              .light-entity-card-color_temp$:
+                .: |
+                  .bar-container,
+                  paper-progress {
+                    overflow: visible;
+                  }
+
+                  .slider-knob-inner {
+                    background-color: white;
+                    border: 0;
+                    box-shadow: 0 0 1px 1px rgba(0,0,0,0.3);
+                  }
+
+                paper-progress$: |
+                  #progressContainer {
+                    background: -webkit-linear-gradient(right, rgb(255, 160, 0) 0%, white 50%, rgb(166, 209, 255) 100%);
+                    border-radius: 10px;
+                    box-shadow: 0 0 1px 1px rgba(0,0,0,0.3);
+                    overflow: hidden;
+                  }
+
+                  #primaryProgress {
+                    background: transparent;
+                  }
+
+      - icon: mdi:format-list-bulleted-type
+        card:
+          type: custom:mod-card
+          style:
+            .: |
+              ha-card {
+                height: 100%;
+              }
+            decluttering-card$: |
+              #root {
+                height: 100%;
+              }
+          card:
+            type: custom:decluttering-card
+            template: popup_logbook
+            variables:
+              - entity: "[[[ return entity.entity_id ]]]"

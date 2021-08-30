@@ -1,0 +1,101 @@
+|
+  .: |
+    ha-card {
+      transition: none;
+    }
+    
+
+    .type-custom-button-card {
+      box-sizing: border-box;
+      padding: 0;
+      height: 100%;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .type-history-graph.popup,
+    .type-logbook.popup {
+      background: none;
+      box-shadow: none;
+      pointer-events: auto;
+    }
+    
+    .type-history-graph.popup .content {
+      padding: 0 16px;
+    }
+
+    .type-logbook.popup .content,
+    .type-logbook.popup .content ha-logbook {
+      height: 100%;
+    }
+
+
+    [class*=layout-] {
+      background: none;
+      box-shadow: none;
+      overflow: visible;
+      transition: none;
+    }
+    
+    [class*=layout-] .card-header {
+      font-size: 1.2em;
+      font-weight: normal;
+      padding: 0 0 0 10px;
+    }
+
+    [class*=layout-] .card-header hui-entities-toggle {
+      display: none;
+    }
+
+    [class*=layout-] #states {
+      padding: 0;
+    }
+
+    [class*=layout-] #states > div {
+      margin: 0;
+    }
+
+    [class*=layout-] #states > div > * {
+      overflow: visible;
+    }
+
+
+    [class*=layout-flex] #states {
+      display: flex;
+    }
+
+    .layout-flex-center #states {
+      align-items: center;
+      justify-content: center;
+    }    
+
+
+    [class*=layout-grid] #states {
+      display: grid;
+      grid-auto-rows: 1fr;
+      grid-gap: 8px;
+      grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+    }
+
+    .layout-grid-square #states::before {
+      content: "";
+      grid-area: 1 / 1 / 1 / 1;
+      padding-bottom: 100%;
+      width: 0px;
+    }
+
+    .layout-grid-square #states > div:first-child {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+
+    .view-title {
+      background: none;
+      box-shadow: none;
+      font-size: 30px;
+      transition: none;
+    }
+    
+    .view-title ha-markdown {
+      padding: 16px 8px 10px 8px;
+    }

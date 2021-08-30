@@ -1,0 +1,13 @@
+cover:
+  template: base
+
+  tap_action:
+    action: fire-dom-event
+    browser_mod:
+      command: popup
+      title: ""
+      hide_header: true
+      card:
+        type: custom:button-card
+        template: cover_popup
+        entity: "[[[ return entity.entity_id; ]]]"

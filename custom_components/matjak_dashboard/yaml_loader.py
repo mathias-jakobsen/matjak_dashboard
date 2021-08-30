@@ -5,11 +5,13 @@
 from .const import (
     CONF_CONFIG_PATH,
     PARSER_KEYWORD,
+    PARSER_KEY_BUTTON_CARD_TEMPLATES,
     PARSER_KEY_CONFIG,
     PARSER_KEY_GLOBAL,
     PARSER_KEY_REGISTRY
 )
 from .data_registry import get_registry
+from .helpers import get_button_card_template_list
 from collections import OrderedDict
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -77,7 +79,8 @@ def get_yaml_loader(logger: Logger, hass: HomeAssistant, jinja: Environment, con
                             **args,
                             PARSER_KEY_GLOBAL: {
                                 PARSER_KEY_CONFIG: config,
-                                PARSER_KEY_REGISTRY: get_registry(hass, logger, config)
+                                PARSER_KEY_REGISTRY: get_registry(hass, logger, config),
+                                PARSER_KEY_BUTTON_CARD_TEMPLATES: get_button_card_template_list(hass, load_yaml)
                             }
                         }))
                 stream.name = filename

@@ -1,0 +1,15 @@
+popup_button:
+  show_name: false
+  show_state: false
+  
+  styles:
+    card:
+      - background: none
+      - border-radius: 50%
+      - box-shadow: none
+      - padding: 12px
+      - transition: none
+    icon:
+      - color: var(--popup-text-color)
+      - transition: var(--popup-text-transition)
+      - width: 24px
