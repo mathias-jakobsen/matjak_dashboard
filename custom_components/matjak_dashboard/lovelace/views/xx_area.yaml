@@ -21,14 +21,12 @@
           title: {{ domain.split("_") | join(" ") | title }}
           entities:
             {% for entity in entities | sort(attribute="domain") | sort(attribute="name") %}
+            {% set template = entity.domain + "_" + entity.device_class if (entity.domain == "sensor" or entity.domain == "binary_sensor") and entity.device_class else entity.domain %}
+            {% set name = entity.name or entity.original_name %}
             - type: custom:button-card
-              {% if (entity.domain == "sensor" or entity.domain == "binary_sensor") and entity.device_class %}
-              template: {{ entity.domain }}_{{ entity.device_class }}
-              {% else %}
-              template: {{ entity.domain }}
-              {% endif %}
+              template: {{ template if template in _global.button_card_template_list else "base" }}
               entity: {{ entity.entity_id }}
-              name: {{ entity.name if not entity.name.startswith(area.name) else entity.name.replace(area.name, "", 1) }}
+              name: {{ name if not name.startswith(area.name) else name.replace(area.name, "", 1) }}
             {% endfor %}
         {% endfor %}
 {% endfor %}
