@@ -9,10 +9,11 @@
   cards:
     - type: vertical-stack
       cards:
-        - type: markdown
+        - type: entities
           card_mod:
-            class: view-title
-          content: {{ area.name }}
+            class: view-header
+          title: {{ area.name }}
+          entities: []
 
         {% for domain, entities in _global.registry.entities.get_by_area(area) | groupby("domain") %}
         - type: entities
@@ -21,12 +22,14 @@
           title: {{ domain.split("_") | join(" ") | title }}
           entities:
             {% for entity in entities | sort(attribute="domain") | sort(attribute="name") %}
-            {% set template = entity.domain + "_" + entity.device_class if (entity.domain == "sensor" or entity.domain == "binary_sensor") and entity.device_class else entity.domain %}
-            {% set name = entity.name or entity.original_name %}
             - type: custom:button-card
-              template: {{ template if template in _global.button_card_template_list else "base" }}
+              {% if (entity.domain == "sensor" or entity.domain == "binary_sensor") and entity.device_class %}
+              template: {{ entity.domain }}_{{ entity.device_class }}
+              {% else %}
+              template: {{ entity.domain }}
+              {% endif %}
               entity: {{ entity.entity_id }}
-              name: {{ name if not name.startswith(area.name) else name.replace(area.name, "", 1) }}
+              name: {{ entity.name if not entity.name.startswith(area.name) else entity.name.replace(area.name, "", 1) }}
             {% endfor %}
         {% endfor %}
 {% endfor %}

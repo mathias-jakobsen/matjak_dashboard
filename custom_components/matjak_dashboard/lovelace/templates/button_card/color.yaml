@@ -1,0 +1,42 @@
+color:
+  variables:
+    type: light
+
+  show_icon: true
+  show_name: false
+  show_state: true
+
+  styles:
+    card:
+      - background: >
+          [[[
+            const hue = `var(--button-color-hue-${variables.type})`;
+            const saturation = `var(--button-color-background__saturation)`;
+            const lightness = `var(--button-color-background__lightness)`;
+            const alpha = `var(--button-color-background__alpha)`;
+
+            return `hsla(${hue}, ${saturation}, ${lightness}, ${alpha})`;
+          ]]]
+      - border-radius: var(--ha-card-border-radius)
+      - color: >
+          [[[
+            const hue = `var(--button-color-hue-${variables.type})`;
+            const saturation = `var(--button-color-text__saturation)`;
+            const lightness = `var(--button-color-text__lightness)`;
+            const alpha = `var(--button-color-text__alpha)`;
+
+            return `hsla(${hue}, ${saturation}, ${lightness}, ${alpha})`;
+          ]]]
+      - font-weight: bold
+      - padding: 7px 14px 7px 11px
+    grid:
+      - grid-gap: 5px
+      - grid-template-areas: "'i s'"
+      - grid-template-columns: auto 1fr
+      - grid-template-rows: auto
+    icon:
+      - color: currentColor
+      - width: 25px
+    state:
+      - font-size: 16px
+      - place-self: center start

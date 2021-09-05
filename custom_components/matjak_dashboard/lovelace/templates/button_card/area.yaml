@@ -1,2 +1,41 @@
 area:
   template: base
+
+  variables:
+    entities: []
+    url: ""
+
+  custom_fields:
+    info: >
+      [[[
+        const lights_entities = variables.entities.filter(entity_id => entity_id.split(".")[0] == "light");
+        const lights_on_entities = lights_entities.filter(entity_id => states[entity_id]?.state == "on");
+        const lights_icon = `<ha-icon icon="mdi:lightbulb" style="display: flex; height: 13px"></ha-icon>`;
+        const lights_text = `${lights_on_entities.length}`;
+        const lights_background = "hsla(var(--button-color-hue-light), var(--button-color-background__saturation), var(--button-color-background__lightness), var(--button-color-background__alpha))";
+        const lights_color = "hsla(var(--button-color-hue-light), var(--button-color-text__saturation), var(--button-color-text__lightness), var(--button-color-text__alpha))";
+        const lights_display = lights_on_entities.length > 0 ? "flex" : "none";
+
+        const media_entities = variables.entities.filter(entity_id => entity_id.split(".")[0] == "media_player");
+        const media_on_entities = media_entities.filter(entity_id => states[entity_id]?.state == "playing");
+        const media_icon = `<ha-icon icon="mdi:play-box" style="display: flex; height: 13px"></ha-icon>`;
+        const media_text = `${media_on_entities.length}`;
+        const media_background = "hsla(var(--button-color-hue-media), var(--button-color-background__saturation), var(--button-color-background__lightness), var(--button-color-background__alpha))";
+        const media_color = "hsla(var(--button-color-hue-media), var(--button-color-text__saturation), var(--button-color-text__lightness), var(--button-color-text__alpha))";
+        const media_display = media_on_entities.length > 0 ? "flex" : "none";
+
+        return `
+          <div class="info" style="background: ${lights_background}; color: ${lights_color}; display: ${lights_display}">${lights_icon}${lights_text}</div>
+          <div class="info" style="background: ${media_background}; color: ${media_color}; display: ${media_display}">${media_icon}${media_text}</div>
+        `;
+      ]]]
+
+  tap_action:
+    action: navigate
+    navigation_path: "[[[ return variables.url; ]]]"
+
+  hold_action:
+    action: call-service
+    service: homeassistant.turn_off
+    service_data:
+      entity_id: "[[[ return variables.entities; ]]]"

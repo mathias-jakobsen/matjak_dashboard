@@ -16,11 +16,31 @@ base:
         card:
           - background: var(--ha-card-background)
 
+  extra_styles: |
+    .info {
+      align-items: center;
+      border-radius: var(--ha-card-border-radius);
+      box-shadow: var(--ha-card-box-shadow);
+      display: flex;
+      font-size: 0.7em;
+      font-weight: bold;
+      gap: 2px;
+      padding: 4px 8px 4px 6px;
+    }
+
   styles:
     card:
       - background: var(--ha-card-background-secondary)
       - padding: 9px 11px 11px 11px
       - position: relative
+    custom_fields:
+      info:
+        - display: flex
+        - flex-direction: column
+        - gap: 4px
+        - position: absolute
+        - right: 11px
+        - top: 11px
     grid:
       - grid-template-areas: "'i .' 'n n' 's s'"
       - grid-template-columns: auto 1fr

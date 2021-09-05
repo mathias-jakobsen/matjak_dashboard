@@ -7,41 +7,49 @@
   cards:
     - type: vertical-stack
       cards:
-        - type: markdown
+        - type: entities
           card_mod:
-            class: view-title
-          content: Your home
+            class: view-header
+          title: My Home
+          entities:
+            - type: custom:button-card
+              template: color
+              entity: {{ _global.config.weather.entities.weather }}
+              icon: >
+                [[[
+                  const icons = {{ _global.config.weather.icons | tojson }};
+                  return icons[entity.state] || "mdi:weather-cloudy";
+                ]]]
+              variables:
+                type: weather
+            - type: custom:button-card
+              template: color
+              icon: >
+                [[[
+                  const persons = {{ _global.registry.entities.get_by_domain("person") | map(attribute="entity_id") | list }}
+                  const state = persons.some(entity_id => states[entity_id].state == "home");
+                  return state ? "mdi:home-account" : "mdi:home-export-outline";
+                ]]]
+              state_display: >
+                [[[
+                  const persons = {{ _global.registry.entities.get_by_domain("person") | map(attribute="entity_id") | list }}
+                  const state = persons.some(entity_id => states[entity_id].state == "home");
+                  return state ? "Home" : "Away";
+                ]]]
+              variables:
+                type: person
 
+        {% if _global.config.favorite_entities | count > 0 %}
         - type: entities
           card_mod:
             class: layout-grid-square
-            style: |
-              #states {
-                grid-template-columns: repeat(auto-fit, minmax(65px, 1fr)) !important;
-              }
-
-              #states > div:first-child {
-                grid-column: 1 / span 2 !important;
-              }
-
-              #states > div {
-                grid-column: span 2;
-              }
+          title: Favorite Entities
           entities:
-            {% for area in _global.registry.areas | sort %}
-            {% set entities = _global.registry.entities.get_by_area(area) %}
-            {% if entities | count > 0 %}
+            {% for entity_id in _global.config.favorite_entities %}
+            {% set entity = _global.registry.entities.get_by_id(entity_id) %}
+            {% set template = entity.domain + "_" + entity.device_class if (entity.domain == "sensor" or entity.domain == "binary_sensor") and entity.device_class else entity.domain %}
             - type: custom:button-card
-              template: area
-              icon: {{ _global.registry.areas.get_area_icon(area) }}
-              name: {{ area.name }}
-              state_display: >
-                [[[
-                  const count = {{ entities | count }};
-                  return `${count} ${count == 1 ? "device" : "devices"}`;
-                ]]]
-              tap_action:
-                action: navigate
-                navigation_path: /matjak-dashboard/{{ area.id }}
-            {% endif %}
+              template: {{ template if template in _global.button_card_template_list else "base" }}
+              entity: {{ entity_id }}
             {% endfor %}
+        {% endif %}

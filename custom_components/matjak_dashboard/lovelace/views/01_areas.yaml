@@ -1,0 +1,71 @@
+# matjak_dashboard
+
+- title: Areas
+  path: areas
+  icon: mdi:texture-box
+  panel: true
+  cards:
+    - type: vertical-stack
+      cards:
+        - type: entities
+          card_mod:
+            class: view-header
+          title: Areas
+          entities: []
+
+        {% set ns = namespace(areas={}) %}
+        {% if not "areas" in _global.config.keys() %}
+          {% set ns.areas = dict(others=_global.registry.areas | sort) %}
+        {% else %}
+          {% for area in _global.registry.areas | sort %}
+            {% if not area.name in _global.config.areas.keys() %}
+              {% set ns.areas = dict(ns.areas, others=[area]) if not "others" in ns.areas.keys() else dict(ns.areas, others=ns.areas["others"] + [area]) %}
+            {% else %}
+              {% set location = _global.config.areas[area.name].location %}
+              {% if location %}
+                {% set ns.areas = dict(ns.areas, **{location: [area]}) if not location in ns.areas.keys() else dict(ns.areas, **{location: ns.areas[location] + [area]}) %}
+              {% else %}
+                {% set ns.areas = dict(ns.areas, others=[area]) if not "others" in ns.areas.keys() else dict(ns.areas, others=ns.areas["others"] + [area]) %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+
+        {% for location, areas in ns.areas.items() %}
+        {% if areas | count > 0 %}
+        - type: entities
+          card_mod:
+            class: layout-grid-square
+            style: |
+              #states {
+                grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)) !important;
+              }
+
+              #states > div:first-child {
+                grid-column: 1 / span 2 !important;
+              }
+
+              #states > div {
+                grid-column: span 2;
+              }
+          title: {{ location | title }}
+          entities:
+            {% for area in areas %}
+            {% set entities = _global.registry.entities.get_by_area(area) | map(attribute="entity_id") | list %}
+            {% set user_icon = ((_global.config.areas|default({}))[area.name]|default({})).icon %}
+            - type: custom:button-card
+              template: area
+              triggers_update: {{ entities }}
+              icon: {{ user_icon or _global.registry.areas.get_area_icon(area) }}
+              name: {{ area.name }}
+              state_display: >
+                [[[
+                  const count = {{ entities | count }};
+                  return `${count} ${count == 1 ? "entity" : "entities"}`;
+                ]]]
+              variables:
+                entities: {{ entities }}
+                url: /matjak-dashboard/{{ area.id }}
+            {% endfor %}
+        {% endif %}
+        {% endfor %}

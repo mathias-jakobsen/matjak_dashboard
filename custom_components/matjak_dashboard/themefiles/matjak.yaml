@@ -4,7 +4,11 @@ matjak:
   ha-card-header-font-size: 1.5em
   button-color-hue-battery-charging: 130
   button-color-hue-battery-critical: 4
+  button-color-hue-entities: 130
   button-color-hue-light: 30
+  button-color-hue-media: 130
+  button-color-hue-person: 200
+  button-color-hue-weather: 270
 
   divider-color: transparent
   sidebar-background-color: var(--primary-background-color)

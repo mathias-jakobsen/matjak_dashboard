@@ -23,8 +23,4 @@ alert:
       info:
         - animation: blink 1s step-start 0s infinite
         - color: red
-        - display: "[[[ return entity.state == 'on' ? 'flex' : 'none'; ]]]"
-        - flex-direction: column
-        - position: absolute
-        - right: 11px
-        - top: 11px
+        - display: "[[[ return entity?.state == 'on' ? 'flex' : 'none'; ]]]"

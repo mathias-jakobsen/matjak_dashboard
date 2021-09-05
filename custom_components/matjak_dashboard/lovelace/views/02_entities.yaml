@@ -7,10 +7,21 @@
   cards:
     - type: vertical-stack
       cards:
-        - type: markdown
+        - type: entities
           card_mod:
-            class: view-title
-          content: Entities
+            class: view-header
+          title: Entities
+          entities:
+            - type: custom:button-card
+              template: color
+              icon: mdi:shape
+              state_display: >
+                [[[
+                  const entities = {{ _global.registry.entities | map(attribute="entity_id") | list }}
+                  return `${entities.length} ${entities.length == 1 ? "entity" : "entities"}`;
+                ]]]
+              variables:
+                type: person
 
         {% for area in _global.registry.areas | sort %}
         {% set entities = _global.registry.entities.get_by_area(area) %}
@@ -22,11 +33,10 @@
           entities:
             {% for entity in entities | sort(attribute="domain") | sort(attribute="name") %}
             {% set template = entity.domain + "_" + entity.device_class if (entity.domain == "sensor" or entity.domain == "binary_sensor") and entity.device_class else entity.domain %}
-            {% set name = entity.name or entity.original_name %}
             - type: custom:button-card
               template: {{ template if template in _global.button_card_template_list else "base" }}
               entity: {{ entity.entity_id }}
-              name: {{ name if not name.startswith(area.name) else name.replace(area.name, "", 1) }}
+              name: {{ entity.name if not entity.name.startswith(area.name) else entity.name.replace(area.name, "", 1) }}
             {% endfor %}
         {% endif %}
         {% endfor %}

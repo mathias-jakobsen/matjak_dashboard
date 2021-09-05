@@ -4,19 +4,17 @@ light:
   state_display: "[[[ return entity.state == 'on' ? `${Math.round(entity.attributes.brightness / 2.55)} %` : entity.state; ]]]"
 
   custom_fields:
-    color: ""
+    info: ""
 
   styles:
     custom_fields:
-      color:
+      info:
         - background-color: var(--button-card-light-color)
         - border-radius: 50%
         - border: 1px solid var(--border-color)
         - display: "[[[ return entity.state == 'on' ? 'flex' : 'none'; ]]]"
         - padding: 10px
-        - position: absolute
-        - right: 11px
-        - top: 11px
+
     state:
       - text-transform: capitalize
 
